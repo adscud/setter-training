@@ -27,6 +27,7 @@ function makeCall() {
 		"HEADBACK",
 	]
 	const textToSpeak = to[Math.floor(Math.random() * to.length)]
+	document.getElementById("call")!.innerHTML = textToSpeak
 	const speakData = new SpeechSynthesisUtterance()
 	speakData.volume = 1 // From 0 to 1
 	speakData.rate = 1 // From 0.1 to 10
@@ -45,6 +46,7 @@ const debouncedMakeCall = debounce(makeCall, 500, {
 
 const CameraFeed: React.FC = () => {
 	const videoRef = useRef<HTMLVideoElement>(null)
+	const setting = useRef<boolean>(false)
 
 	useEffect(() => {
 		const setupCamera = async () => {
@@ -74,14 +76,21 @@ const CameraFeed: React.FC = () => {
 					)
 				if (poses && poses.length > 0) {
 					const leftElbow = normalizedPoses[7]
-					const nose = normalizedPoses[0]
+					const leftShoulder = normalizedPoses[5]
 
 					const isLeftElbowValid =
 						leftElbow && leftElbow.score && leftElbow.score > 0.3
-					const isNoseValid = nose && nose.score && nose.score > 0.75
+					const isNoseValid =
+						leftShoulder &&
+						leftShoulder.score &&
+						leftShoulder.score > 0.75
 
 					if (isLeftElbowValid && isNoseValid) {
-						if (leftElbow.y < nose.y) {
+						if (setting.current && leftElbow.y > leftShoulder.y) {
+							setting.current = false
+						}
+						if (leftElbow.y < leftShoulder.y && !setting.current) {
+							setting.current = true
 							debouncedMakeCall()
 							requestAnimationFrame(() =>
 								detectPose(detector, video)
@@ -125,7 +134,7 @@ const CameraFeed: React.FC = () => {
 	}, [])
 
 	return (
-		<div>
+		<div style={{ position: "relative" }}>
 			<video
 				id="video"
 				ref={videoRef}
@@ -134,6 +143,9 @@ const CameraFeed: React.FC = () => {
 				height={window.innerHeight}
 				width={window.innerWidth}
 			></video>
+			<div style={{ position: "absolute", top: 0 }}>
+				<h1 id="call" style={{ color: "red" }}></h1>
+			</div>
 		</div>
 	)
 }
