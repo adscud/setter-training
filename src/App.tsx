@@ -39,7 +39,7 @@ function makeCall() {
 	speechSynthesis.speak(speakData)
 }
 
-const debouncedMakeCall = debounce(makeCall, 500, {
+const debouncedMakeCall = debounce(makeCall, 1000, {
 	leading: true,
 	trailing: false,
 })
@@ -69,6 +69,7 @@ const CameraFeed: React.FC = () => {
 		) => {
 			if (videoRef.current) {
 				const poses = await detector.estimatePoses(video)
+
 				const normalizedPoses =
 					await poseDetection.calculators.keypointsToNormalizedKeypoints(
 						poses[0].keypoints,
@@ -78,31 +79,25 @@ const CameraFeed: React.FC = () => {
 					const leftElbow = normalizedPoses[7]
 					const leftShoulder = normalizedPoses[5]
 
-					const isLeftElbowValid =
-						leftElbow && leftElbow.score && leftElbow.score > 0.3
-					const isNoseValid =
-						leftShoulder &&
-						leftShoulder.score &&
-						leftShoulder.score > 0.75
-
-					if (isLeftElbowValid && isNoseValid) {
+					if (
+						leftElbow &&
+						leftElbow.score &&
+						leftElbow.score > 0.1 &&
+						leftShoulder
+					) {
 						if (setting.current && leftElbow.y > leftShoulder.y) {
 							setting.current = false
-						}
-						if (leftElbow.y < leftShoulder.y && !setting.current) {
+						} else if (
+							leftElbow.y < leftShoulder.y &&
+							!setting.current
+						) {
 							setting.current = true
 							debouncedMakeCall()
-							requestAnimationFrame(() =>
-								detectPose(detector, video)
-							)
-						} else {
-							requestAnimationFrame(() =>
-								detectPose(detector, video)
-							)
 						}
-					} else {
-						requestAnimationFrame(() => detectPose(detector, video))
 					}
+					requestAnimationFrame(() => {
+						detectPose(detector, video)
+					})
 				}
 			}
 		}
