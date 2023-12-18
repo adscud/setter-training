@@ -2,6 +2,7 @@ import * as poseDetection from "@tensorflow-models/pose-detection"
 import { PosenetModelConfig } from "@tensorflow-models/pose-detection"
 import * as tf from "@tensorflow/tfjs"
 import "@tensorflow/tfjs-backend-webgl" // Import WebGL backend
+import { debounce } from "lodash"
 import React, { useEffect, useRef } from "react"
 
 function getVoices() {
@@ -14,9 +15,36 @@ function getVoices() {
 	return voices
 }
 
+function makeCall() {
+	const to = [
+		"FOUR",
+		"TWO",
+		"PIPE",
+		"ONE",
+		"HEAD",
+		"FLOAT",
+		"SHOOT",
+		"HEADBACK",
+	]
+	const textToSpeak = to[Math.floor(Math.random() * to.length)]
+	const speakData = new SpeechSynthesisUtterance()
+	speakData.volume = 1 // From 0 to 1
+	speakData.rate = 1 // From 0.1 to 10
+	speakData.pitch = 2 // From 0 to 2
+	speakData.text = textToSpeak
+	speakData.lang = "en"
+	speakData.voice = getVoices()[0]
+
+	speechSynthesis.speak(speakData)
+}
+
+const debouncedMakeCall = debounce(makeCall, 500, {
+	leading: true,
+	trailing: false,
+})
+
 const CameraFeed: React.FC = () => {
 	const videoRef = useRef<HTMLVideoElement>(null)
-	const setting = useRef<boolean>(false)
 
 	useEffect(() => {
 		const setupCamera = async () => {
@@ -54,35 +82,10 @@ const CameraFeed: React.FC = () => {
 
 					if (isLeftElbowValid && isNoseValid) {
 						if (leftElbow.y < nose.y) {
-							if (!setting.current) {
-								setting.current = true
-								const to = [
-									"FOUR",
-									"TWO",
-									"PIPE",
-									"ONE",
-									"HEAD",
-									"FLOAT",
-									"SHOOT",
-									"HEADBACK",
-								]
-								const textToSpeak =
-									to[Math.floor(Math.random() * to.length)]
-								const speakData = new SpeechSynthesisUtterance()
-								speakData.volume = 1 // From 0 to 1
-								speakData.rate = 1 // From 0.1 to 10
-								speakData.pitch = 2 // From 0 to 2
-								speakData.text = textToSpeak
-								speakData.lang = "en"
-								speakData.voice = getVoices()[0]
-
-								speechSynthesis.speak(speakData)
-								setting.current = false
-
-								requestAnimationFrame(() =>
-									detectPose(detector, video)
-								)
-							}
+							debouncedMakeCall()
+							requestAnimationFrame(() =>
+								detectPose(detector, video)
+							)
 						} else {
 							requestAnimationFrame(() =>
 								detectPose(detector, video)
