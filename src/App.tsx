@@ -15,38 +15,42 @@ function getVoices() {
 	return voices
 }
 
-function makeCall() {
-	const to = [
-		"FOUR",
-		"TWO",
-		"PIPE",
-		"ONE",
-		"HEAD",
-		"FLOAT",
-		"SHOOT",
-		"HEADBACK",
-	]
-	const textToSpeak = to[Math.floor(Math.random() * to.length)]
-	document.getElementById("call")!.innerHTML = textToSpeak
-	const speakData = new SpeechSynthesisUtterance()
-	speakData.volume = 1 // From 0 to 1
-	speakData.rate = 1 // From 0.1 to 10
-	speakData.pitch = 2 // From 0 to 2
-	speakData.text = textToSpeak
-	speakData.lang = "en"
-	speakData.voice = getVoices()[0]
-
-	speechSynthesis.speak(speakData)
-}
-
-const debouncedMakeCall = debounce(makeCall, 1000, {
-	leading: true,
-	trailing: false,
-})
-
 const CameraFeed: React.FC = () => {
 	const videoRef = useRef<HTMLVideoElement>(null)
 	const setting = useRef<boolean>(false)
+
+	const makeCall = () => {
+		const to = [
+			"FOUR",
+			"TWO",
+			"PIPE",
+			"ONE",
+			"HEAD",
+			"FLOAT",
+			"SHOOT",
+			"HEADBACK",
+		]
+		const textToSpeak = to[Math.floor(Math.random() * to.length)]
+		document.getElementById("call")!.innerHTML = textToSpeak
+		const speakData = new SpeechSynthesisUtterance()
+		speakData.volume = 1 // From 0 to 1
+		speakData.rate = 1 // From 0.1 to 10
+		speakData.pitch = 2 // From 0 to 2
+		speakData.text = textToSpeak
+		speakData.lang = "en"
+		speakData.voice = getVoices()[0]
+
+		speechSynthesis.speak(speakData)
+
+		setTimeout(() => {
+			setting.current = false
+		}, 1000)
+	}
+
+	const debouncedMakeCall = debounce(makeCall, 1000, {
+		leading: true,
+		trailing: false,
+	})
 
 	useEffect(() => {
 		const setupCamera = async () => {
@@ -76,25 +80,20 @@ const CameraFeed: React.FC = () => {
 						video
 					)
 				if (poses && poses.length > 0) {
+					const nose = normalizedPoses[0]
 					const leftElbow = normalizedPoses[7]
-					const leftShoulder = normalizedPoses[5]
 
 					if (
-						leftElbow &&
+						leftElbow.y < nose.y + 0.05 &&
+						!setting.current &&
 						leftElbow.score &&
-						leftElbow.score > 0.1 &&
-						leftShoulder
+						leftElbow.score > 0.7
 					) {
-						if (setting.current && leftElbow.y > leftShoulder.y) {
-							setting.current = false
-						} else if (
-							leftElbow.y < leftShoulder.y &&
-							!setting.current
-						) {
-							setting.current = true
-							debouncedMakeCall()
-						}
+						console.log("left elbow score", leftElbow.score)
+						setting.current = true
+						debouncedMakeCall()
 					}
+
 					requestAnimationFrame(() => {
 						detectPose(detector, video)
 					})
