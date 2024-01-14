@@ -31,5 +31,9 @@ const routeTree = rootRoute.addChildren([homeRoute, trainingRoute])
 const router = new Router({ routeTree })
 
 export default function App() {
-	return <RouterProvider router={router} />
+	return (
+		<div className="h-screen w-screen bg-indigo-950 flex flex-col">
+			<RouterProvider router={router} />
+		</div>
+	)
 }
