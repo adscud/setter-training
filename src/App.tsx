@@ -5,6 +5,7 @@ import {
 	Router,
 	RouterProvider,
 } from "@tanstack/react-router"
+import { TrainingProvider } from "./contexts/training"
 import { Home } from "./views/home"
 import { Training } from "./views/training"
 
@@ -32,8 +33,10 @@ const router = new Router({ routeTree })
 
 export default function App() {
 	return (
-		<div className="h-screen w-screen bg-indigo-950 flex flex-col">
-			<RouterProvider router={router} />
-		</div>
+		<TrainingProvider>
+			<div className="h-screen w-screen bg-indigo-950 flex flex-col">
+				<RouterProvider router={router} />
+			</div>
+		</TrainingProvider>
 	)
 }
