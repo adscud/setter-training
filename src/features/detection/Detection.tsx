@@ -1,9 +1,10 @@
+import { TrainingContext } from "@/contexts/training"
 import * as poseDetection from "@tensorflow-models/pose-detection"
 import { PosenetModelConfig } from "@tensorflow-models/pose-detection"
 import * as tf from "@tensorflow/tfjs"
 import "@tensorflow/tfjs-backend-webgl" // Import WebGL backend
 import { debounce } from "lodash"
-import { useEffect, useRef } from "react"
+import { useContext, useEffect, useRef } from "react"
 
 function getVoices() {
 	let voices = speechSynthesis.getVoices()
@@ -18,19 +19,10 @@ function getVoices() {
 export function Detection() {
 	const videoRef = useRef<HTMLVideoElement>(null)
 	const setting = useRef<boolean>(false)
+	const { sets } = useContext(TrainingContext)
 
 	const makeCall = () => {
-		const to = [
-			"FOUR",
-			"TWO",
-			"PIPE",
-			"ONE",
-			"HEAD",
-			"FLOAT",
-			"SHOOT",
-			"HEADBACK",
-		]
-		const textToSpeak = to[Math.floor(Math.random() * to.length)]
+		const textToSpeak = sets[Math.floor(Math.random() * sets.length)]
 		document.getElementById("call")!.innerHTML = textToSpeak
 		const speakData = new SpeechSynthesisUtterance()
 		speakData.volume = 1 // From 0 to 1
@@ -127,15 +119,17 @@ export function Detection() {
 	}, [debouncedMakeCall])
 
 	return (
-		<video
-			id="video"
-			ref={videoRef}
-			autoPlay
-			playsInline
-			height={window.innerHeight}
-			width={window.innerWidth}
-			className="object-cover"
-			style={{ height: window.innerHeight }}
-		></video>
+		<div className="flex justify-center items-center">
+			<video
+				id="video"
+				ref={videoRef}
+				autoPlay
+				playsInline
+				height={window.innerHeight}
+				width={window.innerWidth}
+				className="object-cover"
+				style={{ height: window.innerHeight }}
+			></video>
+		</div>
 	)
 }
