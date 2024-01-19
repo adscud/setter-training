@@ -127,18 +127,15 @@ export function Detection() {
 	}, [debouncedMakeCall])
 
 	return (
-		<div style={{ position: "relative" }}>
-			<video
-				id="video"
-				ref={videoRef}
-				autoPlay
-				playsInline
-				height={300}
-				width={window.innerWidth}
-			></video>
-			<div style={{ position: "absolute", top: 0 }}>
-				<h1 id="call" style={{ color: "red" }}></h1>
-			</div>
-		</div>
+		<video
+			id="video"
+			ref={videoRef}
+			autoPlay
+			playsInline
+			height={window.innerHeight}
+			width={window.innerWidth}
+			className="object-cover"
+			style={{ height: window.innerHeight }}
+		></video>
 	)
 }
