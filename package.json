@@ -3,11 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://adscud.github.io/setter-training/",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "yarn build && gh-pages -d dist"
   },
   "dependencies": {
     "@mediapipe/pose": "^0.5.1675469404",
@@ -25,6 +27,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "framer-motion": "^10.18.0",
+    "gh-pages": "^6.1.1",
     "lodash": "^4.17.21",
     "lucide-react": "^0.309.0",
     "react": "^18.2.0",
