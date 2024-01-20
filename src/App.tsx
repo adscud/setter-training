@@ -1,19 +1,15 @@
 import {
-	Outlet,
 	RootRoute,
 	Route,
 	Router,
 	RouterProvider,
+	createMemoryHistory,
 } from "@tanstack/react-router"
 import { TrainingProvider } from "./contexts/training"
 import { Home } from "./views/home"
 import { Training } from "./views/training"
 
-const rootRoute = new RootRoute({
-	component: () => {
-		return <Outlet />
-	},
-})
+const rootRoute = new RootRoute()
 
 const homeRoute = new Route({
 	getParentRoute: () => rootRoute,
@@ -27,9 +23,13 @@ const trainingRoute = new Route({
 	component: Training,
 })
 
+const memoryHistory = createMemoryHistory({
+	initialEntries: ["/"], // Pass your initial url
+})
+
 const routeTree = rootRoute.addChildren([homeRoute, trainingRoute])
 
-const router = new Router({ routeTree })
+const router = new Router({ routeTree, history: memoryHistory })
 
 export default function App() {
 	return (
