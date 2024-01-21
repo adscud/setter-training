@@ -3,6 +3,7 @@ import * as poseDetection from "@tensorflow-models/pose-detection"
 import { PosenetModelConfig } from "@tensorflow-models/pose-detection"
 import * as tf from "@tensorflow/tfjs"
 import "@tensorflow/tfjs-backend-webgl" // Import WebGL backend
+import { motion } from "framer-motion"
 import { debounce } from "lodash"
 import { useContext, useEffect, useRef } from "react"
 
@@ -119,7 +120,7 @@ export function Detection() {
 	}, [debouncedMakeCall])
 
 	return (
-		<div className="flex justify-center items-center">
+		<div className="flex justify-center items-center h-full w-full">
 			<video
 				id="video"
 				ref={videoRef}
@@ -128,8 +129,32 @@ export function Detection() {
 				height={window.innerHeight}
 				width={window.innerWidth}
 				className="object-cover"
-				style={{ height: window.innerHeight }}
+				style={{ display: "none" }}
 			></video>
+			<div className="m-auto px-4">
+				<motion.div
+					className="bg-indigo-500 h-20 w-20 mx-auto"
+					animate={{
+						scale: [1, 2, 2, 1, 1],
+						rotate: [0, 0, 180, 180, 0],
+						borderRadius: ["0%", "0%", "50%", "50%", "0%"],
+					}}
+					transition={{
+						duration: 2,
+						ease: "easeInOut",
+						times: [0, 0.2, 0.5, 0.8, 1],
+						repeat: Infinity,
+						repeatDelay: 1,
+					}}
+				/>
+				<p className="mt-20 text-white text-center">
+					Start setting, work your neutral position!
+				</p>
+				<p className="text-center text-indigo-500 text-xs mt-2">
+					(i) We need your permission for the camera and the
+					microphone
+				</p>
+			</div>
 		</div>
 	)
 }
