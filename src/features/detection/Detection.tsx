@@ -32,6 +32,7 @@ export function Detection() {
 		speakData.voice = getVoices()[0]
 
 		speechSynthesis.speak(speakData)
+		alert(textToSpeak)
 
 		setTimeout(() => {
 			setting.current = false
