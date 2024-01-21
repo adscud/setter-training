@@ -27,12 +27,6 @@ export function Detection() {
 		const speakData = new SpeechSynthesisUtterance()
 		const voices = getVoices()
 
-		if (!voices.length) {
-			setting.current = false
-			alert("No voices")
-			return
-		}
-
 		speakData.volume = 1 // From 0 to 1
 		speakData.rate = 1 // From 0.1 to 10
 		speakData.pitch = 2 // From 0 to 2
@@ -40,9 +34,7 @@ export function Detection() {
 		speakData.lang = "en"
 		speakData.voice = voices[0]
 
-		alert("voices: " + voices.length)
-
-		// speechSynthesis.speak(speakData)
+		speechSynthesis.speak(speakData)
 
 		setTimeout(() => {
 			setting.current = false
