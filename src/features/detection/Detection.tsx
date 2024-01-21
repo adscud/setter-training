@@ -23,7 +23,6 @@ export function Detection() {
 
 	const makeCall = () => {
 		const textToSpeak = sets[Math.floor(Math.random() * sets.length)]
-		document.getElementById("call")!.innerHTML = textToSpeak
 		const speakData = new SpeechSynthesisUtterance()
 		speakData.volume = 1 // From 0 to 1
 		speakData.rate = 1 // From 0.1 to 10

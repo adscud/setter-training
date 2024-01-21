@@ -12,7 +12,7 @@ export function Home() {
 	const disabled = sets.length < 2
 
 	return (
-		<div className="m-auto flex flex-col justify-center">
+		<div className="m-auto flex flex-col justify-center p-4">
 			<p className="font-semibold text-white text-4xl text-indigo-100 mb-4">
 				Choose your sets
 			</p>
