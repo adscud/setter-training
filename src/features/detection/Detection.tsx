@@ -35,7 +35,7 @@ export function Detection() {
 
 		setTimeout(() => {
 			setting.current = false
-		}, 1000)
+		}, 2000)
 	}
 
 	const debouncedMakeCall = debounce(makeCall, 1000, {

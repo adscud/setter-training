@@ -16,7 +16,7 @@ export function Home() {
 			<p className="font-semibold text-white text-4xl text-indigo-100 mb-4">
 				Choose your sets
 			</p>
-			<div className="flex flex-col md:flex-row md:justify-center md:items-center">
+			<div className="flex flex-col flex-wrap md:flex-row md:justify-center md:items-center">
 				{SETS.map((set) => (
 					<div
 						key={set}
