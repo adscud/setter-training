@@ -25,15 +25,24 @@ export function Detection() {
 	const makeCall = () => {
 		const textToSpeak = sets[Math.floor(Math.random() * sets.length)]
 		const speakData = new SpeechSynthesisUtterance()
+		const voices = getVoices()
+
+		if (!voices.length) {
+			setting.current = false
+			alert("No voices")
+			return
+		}
+
 		speakData.volume = 1 // From 0 to 1
 		speakData.rate = 1 // From 0.1 to 10
 		speakData.pitch = 2 // From 0 to 2
 		speakData.text = textToSpeak
 		speakData.lang = "en"
-		speakData.voice = getVoices()[0]
+		speakData.voice = voices[0]
 
-		speechSynthesis.speak(speakData)
-		alert(textToSpeak)
+		alert("voices: " + voices.length)
+
+		// speechSynthesis.speak(speakData)
 
 		setTimeout(() => {
 			setting.current = false
